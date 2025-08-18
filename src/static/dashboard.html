@@ -1,0 +1,1936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signova Pro - AI Document Intelligence Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .logo-icon {
+            background: white;
+            color: #667eea;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-tab {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .nav-tab:hover, .nav-tab.active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: white;
+        }
+
+        .profile-selector {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .card-description {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .search-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .search-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .search-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .profile-card {
+            background: #f8f9fa;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .profile-card:hover {
+            border-color: #667eea;
+            background: #f0f2ff;
+        }
+
+        .profile-card.active {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .profile-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-type {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .profile-card.active .profile-type {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .document-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .document-item {
+            background: #f8f9fa;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .document-item:hover {
+            border-color: #667eea;
+            background: #f0f2ff;
+        }
+
+        .document-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .document-title {
+            font-weight: bold;
+            color: #333;
+            flex: 1;
+        }
+
+        .document-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-draft {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .status-sent {
+            background: #cce5ff;
+            color: #0066cc;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-signed {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .document-meta {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 2% auto;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            font-size: 1rem;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .chatbot {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+            transition: transform 0.3s;
+            font-size: 1.5rem;
+            color: white;
+            z-index: 999;
+        }
+
+        .chatbot:hover {
+            transform: scale(1.1);
+        }
+
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 2rem;
+            background: #28a745;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transform: translateX(400px);
+            transition: transform 0.3s;
+            z-index: 1001;
+            max-width: 400px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            background: #dc3545;
+        }
+
+        .notification.warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .ai-suggestions {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .ai-suggestions h3 {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .suggestion-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .suggestion-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .message-item {
+            background: #f8f9fa;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .message-type {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .message-timestamp {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .message-content {
+            color: #333;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tabs {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .nav-tab {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">S</div>
+            Signova Pro
+        </div>
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('dashboard')">Dashboard</button>
+            <button class="nav-tab" onclick="switchTab('documents')">Documents</button>
+            <button class="nav-tab" onclick="switchTab('messaging')">Messaging</button>
+            <button class="nav-tab" onclick="switchTab('profiles')">Profiles</button>
+            <button class="nav-tab" onclick="switchTab('analytics')">Analytics</button>
+        </div>
+        <div class="user-info">
+            <select class="profile-selector" id="activeProfile" onchange="switchProfile()">
+                <option value="personal">Personal Profile</option>
+                <option value="business">Business Profile</option>
+                <option value="client1">Client Project A</option>
+                <option value="client2">Client Project B</option>
+            </select>
+            <span>demo@signova.ai</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <!-- AI Suggestions -->
+            <div class="ai-suggestions" id="aiSuggestions">
+                <h3>🤖 AI Smart Suggestions</h3>
+                <div id="suggestionsContainer">
+                    <div class="loading"></div> Loading AI suggestions...
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalDocs">-</div>
+                    <div class="stat-label">Documents Created</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="sentDocs">-</div>
+                    <div class="stat-label">Documents Sent</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="completedDocs">-</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="pendingDocs">-</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="activeProfiles">-</div>
+                    <div class="stat-label">Active Profiles</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">617</div>
+                    <div class="stat-label">Document Types</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: #667eea;">🚀</div>
+                        <div class="card-title">Quick Document Creation</div>
+                    </div>
+                    <div class="card-description">
+                        Create documents instantly using your pre-filled profiles. AI automatically populates all relevant fields.
+                    </div>
+                    <button class="btn" onclick="quickCreate('contract')">Quick Contract</button>
+                    <button class="btn" onclick="quickCreate('invoice')">Quick Invoice</button>
+                    <button class="btn" onclick="quickCreate('proposal')">Quick Proposal</button>
+                    <button class="btn btn-secondary" onclick="openDocumentCreator()">Custom Document</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: #28a745;">📨</div>
+                        <div class="card-title">Recent Activity</div>
+                    </div>
+                    <div class="card-description">
+                        Latest document activities and status updates.
+                    </div>
+                    <div id="recentActivity">
+                        <div class="loading"></div> Loading recent activity...
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: #17a2b8;">⚡</div>
+                        <div class="card-title">AI Automation</div>
+                    </div>
+                    <div class="card-description">
+                        Smart automation features to streamline your workflow.
+                    </div>
+                    <button class="btn" onclick="setupAutomation()">Setup Auto-Reminders</button>
+                    <button class="btn" onclick="bulkOperations()">Bulk Operations</button>
+                    <button class="btn btn-secondary" onclick="aiOptimize()">AI Optimize</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: #ffc107;">🎯</div>
+                        <div class="card-title">Performance Insights</div>
+                    </div>
+                    <div class="card-description">
+                        Track your document performance and efficiency metrics.
+                    </div>
+                    <div id="performanceInsights">
+                        <div class="loading"></div> Loading performance data...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Documents Tab -->
+        <div id="documents" class="tab-content">
+            <div class="search-section">
+                <h2 style="margin-bottom: 1rem;">📁 Document Management</h2>
+                <div class="search-container">
+                    <input type="text" class="search-input" id="documentSearch" placeholder="Search documents by name, type, or recipient...">
+                    <button class="search-btn" onclick="searchDocuments()">Search</button>
+                </div>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <select class="form-select" style="width: auto;" id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="draft">Draft</option>
+                        <option value="sent">Sent</option>
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                        <option value="signed">Signed</option>
+                    </select>
+                    <select class="form-select" style="width: auto;" id="typeFilter">
+                        <option value="">All Types</option>
+                        <option value="contract">Contracts</option>
+                        <option value="invoice">Invoices</option>
+                        <option value="proposal">Proposals</option>
+                        <option value="nda">NDAs</option>
+                        <option value="employment">Employment</option>
+                    </select>
+                    <button class="btn" onclick="filterDocuments()">Filter</button>
+                    <button class="btn btn-success" onclick="openDocumentCreator()">+ New Document</button>
+                </div>
+            </div>
+
+            <div class="document-list" id="documentList">
+                <div class="loading"></div> Loading documents...
+            </div>
+        </div>
+
+        <!-- Messaging Tab -->
+        <div id="messaging" class="tab-content">
+            <div class="search-section">
+                <h2 style="margin-bottom: 1rem;">💬 Document Messaging & Tracking</h2>
+                <p style="color: #666; margin-bottom: 1.5rem;">Track all document communications, reminders, and recipient interactions in one place.</p>
+                <button class="btn btn-success" onclick="sendBulkReminder()">Send Bulk Reminder</button>
+                <button class="btn" onclick="refreshMessages()">Refresh Messages</button>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: #28a745;">📤</div>
+                        <div class="card-title">Sent Documents</div>
+                    </div>
+                    <div class="card-description">
+                        Monitor documents sent to recipients with delivery and read status.
+                    </div>
+                    <div id="sentDocuments">
+                        <div class="loading"></div> Loading sent documents...
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: #ffc107;">⏰</div>
+                        <div class="card-title">Pending Actions</div>
+                    </div>
+                    <div class="card-description">
+                        Documents requiring follow-up or recipient action.
+                    </div>
+                    <div id="pendingActions">
+                        <div class="loading"></div> Loading pending actions...
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: #17a2b8;">💬</div>
+                        <div class="card-title">Message History</div>
+                    </div>
+                    <div class="card-description">
+                        All communications related to your documents.
+                    </div>
+                    <div id="messageHistory">
+                        <div class="loading"></div> Loading message history...
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: #6f42c1;">🤖</div>
+                        <div class="card-title">Smart Automation</div>
+                    </div>
+                    <div class="card-description">
+                        AI-powered messaging and follow-up automation.
+                    </div>
+                    <button class="btn" onclick="setupReminders()">Setup Auto-Reminders</button>
+                    <button class="btn" onclick="bulkMessage()">Bulk Messaging</button>
+                    <button class="btn btn-secondary" onclick="messageTemplates()">Message Templates</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profiles Tab -->
+        <div id="profiles" class="tab-content">
+            <div class="search-section">
+                <h2 style="margin-bottom: 1rem;">👤 Profile Management</h2>
+                <p style="color: #666; margin-bottom: 1.5rem;">Manage your profiles for instant document prefilling. Create different profiles for various scenarios.</p>
+                <button class="btn btn-success" onclick="createProfile()">+ Create New Profile</button>
+                <button class="btn" onclick="importProfile()">Import Profile</button>
+                <button class="btn btn-secondary" onclick="exportProfiles()">Export All</button>
+                <button class="btn" onclick="refreshProfiles()">Refresh</button>
+            </div>
+
+            <div class="profile-grid" id="profileGrid">
+                <div class="loading"></div> Loading profiles...
+            </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="analytics" class="tab-content">
+            <div class="search-section">
+                <h2 style="margin-bottom: 1rem;">📊 Analytics & Insights</h2>
+                <p style="color: #666; margin-bottom: 1.5rem;">Comprehensive analytics on your document performance, efficiency, and business insights.</p>
+                <button class="btn" onclick="refreshAnalytics()">Refresh Analytics</button>
+                <button class="btn btn-secondary" onclick="exportAnalytics()">Export Report</button>
+            </div>
+
+            <div class="stats-grid" id="analyticsStats">
+                <div class="loading"></div> Loading analytics...
+            </div>
+
+            <div class="dashboard-grid" id="analyticsCards">
+                <div class="loading"></div> Loading detailed analytics...
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot -->
+    <div class="chatbot" onclick="openChatbot()">💬</div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <span id="notificationText">Action completed successfully!</span>
+    </div>
+
+    <!-- Document Creator Modal -->
+    <div id="documentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('documentModal')">&times;</span>
+            <h3>🤖 AI Document Creator</h3>
+            <div class="form-group">
+                <label class="form-label">Document Type</label>
+                <select class="form-select" id="documentType">
+                    <option value="">Select document type...</option>
+                    <option value="contract">Service Contract</option>
+                    <option value="invoice">Invoice</option>
+                    <option value="proposal">Project Proposal</option>
+                    <option value="nda">Non-Disclosure Agreement</option>
+                    <option value="employment">Employment Contract</option>
+                    <option value="business-plan">Business Plan</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Use Profile</label>
+                <select class="form-select" id="profileSelect">
+                    <option value="personal">Personal Profile</option>
+                    <option value="business">Business Profile</option>
+                    <option value="client1">Client Project A</option>
+                    <option value="client2">Client Project B</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Document Title</label>
+                <input type="text" class="form-input" id="documentTitle" placeholder="Document title...">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Recipient Email (Optional)</label>
+                <input type="email" class="form-input" id="recipientEmail" placeholder="recipient@email.com">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Document Value (Optional)</label>
+                <input type="number" class="form-input" id="documentValue" placeholder="0">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Additional Instructions</label>
+                <textarea class="form-textarea" id="instructions" placeholder="Any specific requirements or customizations..."></textarea>
+            </div>
+            <button class="btn" onclick="createDocument()" style="width: 100%; margin-top: 1rem;" id="createDocBtn">🚀 Create Document with AI</button>
+        </div>
+    </div>
+
+    <!-- Profile Editor Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('profileModal')">&times;</span>
+            <h3>👤 Profile Editor</h3>
+            <div class="form-group">
+                <label class="form-label">Profile Name</label>
+                <input type="text" class="form-input" id="profileName" placeholder="Profile name...">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Profile Type</label>
+                <select class="form-select" id="profileType">
+                    <option value="personal">Personal</option>
+                    <option value="business">Business</option>
+                    <option value="project">Project</option>
+                    <option value="client">Client</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Full Name / Company Name</label>
+                <input type="text" class="form-input" id="fullName" placeholder="Full name or company name...">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="email" placeholder="email@example.com">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Phone</label>
+                <input type="tel" class="form-input" id="phone" placeholder="(555) 123-4567">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Address</label>
+                <textarea class="form-textarea" id="address" placeholder="Full address..."></textarea>
+            </div>
+            <div id="businessFields" style="display: none;">
+                <div class="form-group">
+                    <label class="form-label">Tax ID</label>
+                    <input type="text" class="form-input" id="taxId" placeholder="Tax ID...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Industry</label>
+                    <input type="text" class="form-input" id="industry" placeholder="Industry...">
+                </div>
+            </div>
+            <div id="projectFields" style="display: none;">
+                <div class="form-group">
+                    <label class="form-label">Client</label>
+                    <input type="text" class="form-input" id="client" placeholder="Client name...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Budget</label>
+                    <input type="text" class="form-input" id="budget" placeholder="Budget...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Timeline</label>
+                    <input type="text" class="form-input" id="timeline" placeholder="Timeline...">
+                </div>
+            </div>
+            <button class="btn" onclick="saveProfile()" style="width: 100%; margin-top: 1rem;" id="saveProfileBtn">💾 Save Profile</button>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_BASE = 'https://5001-inxmhfxtt6t442pe2nqvr-618fd2b2.manusvm.computer/api';
+        
+        // Global state
+        let currentTab = 'dashboard';
+        let activeProfile = 'personal';
+        let documents = [];
+        let profiles = {};
+        let messages = [];
+        let analytics = {};
+        let currentEditingProfile = null;
+
+        // API Helper functions
+        async function apiCall(endpoint, options = {}) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('API Call failed:', error);
+                showNotification(`Error: ${error.message}`, 'error');
+                throw error;
+            }
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked nav tab
+            event.target.classList.add('active');
+            
+            currentTab = tabName;
+            
+            // Load tab-specific data
+            loadTabData(tabName);
+        }
+
+        // Load data for specific tabs
+        async function loadTabData(tabName) {
+            switch(tabName) {
+                case 'dashboard':
+                    await loadDashboardData();
+                    break;
+                case 'documents':
+                    await loadDocuments();
+                    break;
+                case 'messaging':
+                    await loadMessages();
+                    break;
+                case 'profiles':
+                    await loadProfiles();
+                    break;
+                case 'analytics':
+                    await loadAnalytics();
+                    break;
+            }
+        }
+
+        // Dashboard data loading
+        async function loadDashboardData() {
+            try {
+                // Load analytics for stats
+                const analyticsData = await apiCall('/analytics?email=demo@signova.ai');
+                updateStatsGrid(analyticsData);
+                
+                // Load AI suggestions
+                const suggestions = await apiCall(`/ai/suggestions?profile_id=${activeProfile}`);
+                updateAISuggestions(suggestions);
+                
+                // Load recent activity
+                const recentMessages = await apiCall('/messages');
+                updateRecentActivity(recentMessages.slice(0, 5));
+                
+                // Load performance insights
+                updatePerformanceInsights(analyticsData);
+                
+            } catch (error) {
+                console.error('Failed to load dashboard data:', error);
+            }
+        }
+
+        // Update stats grid
+        function updateStatsGrid(stats) {
+            document.getElementById('totalDocs').textContent = stats.total_documents || 0;
+            document.getElementById('sentDocs').textContent = stats.total_documents - (stats.total_documents * (1 - stats.completion_rate/100)) || 0;
+            document.getElementById('completedDocs').textContent = Math.round(stats.total_documents * stats.completion_rate/100) || 0;
+            document.getElementById('pendingDocs').textContent = stats.total_documents - Math.round(stats.total_documents * stats.completion_rate/100) || 0;
+            document.getElementById('activeProfiles').textContent = Object.keys(profiles).length || 4;
+        }
+
+        // Update AI suggestions
+        function updateAISuggestions(suggestions) {
+            const container = document.getElementById('suggestionsContainer');
+            
+            if (suggestions.length === 0) {
+                container.innerHTML = '<div class="suggestion-item">🎯 All caught up! Your documents are well managed.</div>';
+                return;
+            }
+            
+            container.innerHTML = suggestions.map(suggestion => `
+                <div class="suggestion-item" onclick="handleSuggestion('${suggestion.action}', '${suggestion.type}')">
+                    ${getSuggestionIcon(suggestion.type)} ${suggestion.title}
+                    <div style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;">${suggestion.description}</div>
+                </div>
+            `).join('');
+        }
+
+        function getSuggestionIcon(type) {
+            const icons = {
+                'follow_up': '📞',
+                'payment_reminder': '💰',
+                'create_document': '📄',
+                'create_template': '📋'
+            };
+            return icons[type] || '💡';
+        }
+
+        // Update recent activity
+        function updateRecentActivity(messages) {
+            const container = document.getElementById('recentActivity');
+            
+            if (messages.length === 0) {
+                container.innerHTML = '<div style="color: #666;">No recent activity</div>';
+                return;
+            }
+            
+            container.innerHTML = messages.map(msg => `
+                <div style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 0.5rem;">
+                    • <strong>${msg.type}</strong> - ${msg.subject || 'Document activity'}<br>
+                    <span style="color: #666; font-size: 0.8rem;">${formatDate(msg.timestamp)}</span>
+                </div>
+            `).join('');
+        }
+
+        // Update performance insights
+        function updatePerformanceInsights(analytics) {
+            const container = document.getElementById('performanceInsights');
+            const overview = analytics.overview;
+            
+            container.innerHTML = `
+                <div style="font-size: 0.9rem; line-height: 1.8;">
+                    • <strong>${overview.completion_rate}%</strong> Document completion rate<br>
+                    • <strong>${overview.avg_completion_days} days</strong> Average turnaround<br>
+                    • <strong>${overview.client_satisfaction}%</strong> Client satisfaction<br>
+                    • <strong>${overview.time_saved_hours} hours</strong> Time saved this month
+                </div>
+            `;
+        }
+
+        // Load documents
+        async function loadDocuments() {
+            try {
+                const response = await apiCall('/documents');
+                
+                // Handle the API response format: {documents: [...]}
+                let docs = [];
+                if (response && response.documents && Array.isArray(response.documents)) {
+                    docs = response.documents;
+                } else if (Array.isArray(response)) {
+                    docs = response;
+                }
+                
+                documents = docs;
+                displayDocuments(docs);
+                console.log('✅ Documents loaded successfully:', docs.length, 'documents');
+            } catch (error) {
+                console.error('Failed to load documents:', error);
+                document.getElementById('documentList').innerHTML = '<div class="error">Failed to load documents</div>';
+            }
+        }
+
+        // Display documents
+        function displayDocuments(docs) {
+            const container = document.getElementById('documentList');
+            
+            if (docs.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #666; padding: 2rem;">No documents found</div>';
+                return;
+            }
+            
+            container.innerHTML = docs.map(doc => `
+                <div class="document-item" onclick="openDocument('${doc.id}')">
+                    <div class="document-header">
+                        <div class="document-title">${doc.title}</div>
+                        <div class="document-status status-${doc.status}">${doc.status.charAt(0).toUpperCase() + doc.status.slice(1)}</div>
+                    </div>
+                    <div class="document-meta">
+                        Created: ${formatDate(doc.created)} 
+                        ${doc.recipient ? `| Sent to: ${doc.recipient}` : ''}
+                        ${doc.completed ? `| Completed: ${formatDate(doc.completed)}` : ''}
+                        ${doc.value ? `| Value: $${doc.value}` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load messages
+        async function loadMessages() {
+            try {
+                const msgs = await apiCall('/messages');
+                messages = msgs;
+                displayMessages();
+            } catch (error) {
+                console.error('Failed to load messages:', error);
+            }
+        }
+
+        // Display messages
+        function displayMessages() {
+            // Update sent documents
+            const sentDocs = documents.filter(doc => doc.status === 'sent' || doc.status === 'completed' || doc.status === 'signed');
+            document.getElementById('sentDocuments').innerHTML = sentDocs.slice(0, 3).map(doc => `
+                <div style="font-size: 0.9rem; line-height: 1.8; margin-bottom: 1rem;">
+                    📄 <strong>${doc.title}</strong><br>
+                    → ${doc.recipient || 'No recipient'} ${doc.completed ? '✅ Completed' : '⏳ Pending'}<br>
+                </div>
+            `).join('') || '<div style="color: #666;">No sent documents</div>';
+            
+            // Update pending actions
+            const pendingDocs = documents.filter(doc => doc.status === 'sent' || doc.status === 'pending');
+            document.getElementById('pendingActions').innerHTML = pendingDocs.slice(0, 3).map(doc => `
+                <div style="font-size: 0.9rem; line-height: 1.8; margin-bottom: 1rem;">
+                    🔔 <strong>${doc.title}</strong><br>
+                    ${doc.due ? `Due: ${formatDate(doc.due)}` : 'Follow up needed'}<br>
+                </div>
+            `).join('') || '<div style="color: #666;">No pending actions</div>';
+            
+            // Update message history
+            document.getElementById('messageHistory').innerHTML = messages.slice(0, 5).map(msg => `
+                <div style="font-size: 0.9rem; line-height: 1.8; margin-bottom: 1rem;">
+                    📧 <strong>${formatDate(msg.timestamp)}</strong><br>
+                    ${msg.subject || msg.type}<br>
+                </div>
+            `).join('') || '<div style="color: #666;">No message history</div>';
+        }
+
+        // Load profiles
+        async function loadProfiles() {
+            try {
+                const profileData = await apiCall('/profiles');
+                profiles = {};
+                
+                // Handle the API response format: {business: {...}, personal: {...}}
+                if (profileData && typeof profileData === 'object') {
+                    Object.values(profileData).forEach(profile => {
+                        if (profile && profile.id) {
+                            profiles[profile.id] = profile;
+                        }
+                    });
+                }
+                
+                displayProfiles();
+                console.log('✅ Profiles loaded successfully:', Object.keys(profiles).length, 'profiles');
+            } catch (error) {
+                console.error('Failed to load profiles:', error);
+                document.getElementById('profileGrid').innerHTML = '<div class="error">Failed to load profiles</div>';
+            }
+        }
+
+        // Display profiles
+        function displayProfiles() {
+            const container = document.getElementById('profileGrid');
+            
+            container.innerHTML = Object.values(profiles).map(profile => `
+                <div class="profile-card ${profile.id === activeProfile ? 'active' : ''}" onclick="selectProfile('${profile.id}')">
+                    <div class="profile-name">${profile.name}</div>
+                    <div class="profile-type">${profile.type} • ${profile.usage_count || 0} documents</div>
+                    <div style="font-size: 0.9rem; line-height: 1.6;">
+                        <strong>${profile.fullName}</strong><br>
+                        ${profile.email}<br>
+                        ${profile.phone || ''}<br>
+                        <em>Created: ${formatDate(profile.created)}</em>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <button class="btn" style="font-size: 0.8rem; padding: 0.5rem 1rem;" onclick="editProfile('${profile.id}'); event.stopPropagation();">Edit</button>
+                        <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.5rem 1rem;" onclick="duplicateProfile('${profile.id}'); event.stopPropagation();">Duplicate</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load analytics
+        async function loadAnalytics() {
+            try {
+                const analyticsData = await apiCall('/analytics');
+                analytics = analyticsData;
+                displayAnalytics();
+            } catch (error) {
+                console.error('Failed to load analytics:', error);
+            }
+        }
+
+        // Display analytics
+        function displayAnalytics() {
+            const overview = analytics.overview;
+            const revenue = analytics.revenue;
+            
+            // Update stats grid
+            document.getElementById('analyticsStats').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${overview.total_documents}</div>
+                    <div class="stat-label">Total Documents</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${overview.completion_rate}%</div>
+                    <div class="stat-label">Completion Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${overview.avg_completion_days}</div>
+                    <div class="stat-label">Avg Days to Complete</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${overview.client_satisfaction}%</div>
+                    <div class="stat-label">Client Satisfaction</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${overview.time_saved_hours}h</div>
+                    <div class="stat-label">Time Saved</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">$${overview.revenue_tracked}</div>
+                    <div class="stat-label">Revenue Tracked</div>
+                </div>
+            `;
+            
+            // Update analytics cards
+            document.getElementById('analyticsCards').innerHTML = `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: #667eea;">📈</div>
+                        <div class="card-title">Document Performance</div>
+                    </div>
+                    <div class="card-description">Track how your documents perform over time.</div>
+                    <div style="font-size: 0.9rem; line-height: 1.8;">
+                        ${Object.entries(analytics.document_types || {}).map(([type, count]) => 
+                            `📊 <strong>${type}:</strong> ${count} documents<br>`
+                        ).join('')}
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: #28a745;">💰</div>
+                        <div class="card-title">Revenue Insights</div>
+                    </div>
+                    <div class="card-description">Financial performance of your documents.</div>
+                    <div style="font-size: 0.9rem; line-height: 1.8;">
+                        💵 <strong>Total Invoiced:</strong> $${revenue.total_invoiced || 0}<br>
+                        💵 <strong>Paid:</strong> $${revenue.paid || 0}<br>
+                        💵 <strong>Pending:</strong> $${revenue.pending || 0}<br>
+                        💵 <strong>Avg Invoice:</strong> $${revenue.avg_invoice || 0}
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: #17a2b8;">⚡</div>
+                        <div class="card-title">Efficiency Metrics</div>
+                    </div>
+                    <div class="card-description">How AI automation improves your workflow.</div>
+                    <div style="font-size: 0.9rem; line-height: 1.8;">
+                        ⚡ <strong>Auto-filled:</strong> 95% of fields<br>
+                        ⚡ <strong>Time per doc:</strong> 8 min (vs 45 min manual)<br>
+                        ⚡ <strong>Error reduction:</strong> 92%<br>
+                        ⚡ <strong>Client satisfaction:</strong> +23%
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background: #ffc107;">🎯</div>
+                        <div class="card-title">Profile Usage</div>
+                    </div>
+                    <div class="card-description">How your profiles are being used.</div>
+                    <div style="font-size: 0.9rem; line-height: 1.8;">
+                        ${Object.entries(analytics.profile_usage || {}).map(([profileId, count]) => 
+                            `🔹 <strong>${profiles[profileId]?.name || profileId}:</strong> ${count} documents<br>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Profile switching
+        async function switchProfile() {
+            activeProfile = document.getElementById('activeProfile').value;
+            showNotification(`Switched to ${profiles[activeProfile]?.name || 'Unknown Profile'}`);
+            
+            // Reload current tab data
+            await loadTabData(currentTab);
+        }
+
+        // Quick document creation
+        async function quickCreate(type) {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Creating...';
+            
+            try {
+                const docData = {
+                    title: `${type.charAt(0).toUpperCase() + type.slice(1)} - ${new Date().toLocaleDateString()}`,
+                    type: type,
+                    profile_used: activeProfile,
+                    description: `Quick ${type} created with ${profiles[activeProfile]?.name || 'profile'}`
+                };
+                
+                const newDoc = await apiCall('/documents', {
+                    method: 'POST',
+                    body: JSON.stringify(docData)
+                });
+                
+                showNotification(`✅ ${newDoc.title} created successfully! All fields pre-filled from your profile.`);
+                
+                // Refresh documents if on documents tab
+                if (currentTab === 'documents') {
+                    await loadDocuments();
+                }
+                
+                // Refresh dashboard stats
+                await loadDashboardData();
+                
+            } catch (error) {
+                showNotification(`Failed to create ${type}: ${error.message}`, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        }
+
+        // Open document creator
+        function openDocumentCreator() {
+            document.getElementById('documentModal').style.display = 'block';
+            
+            // Populate profile selector
+            const profileSelect = document.getElementById('profileSelect');
+            profileSelect.innerHTML = Object.values(profiles).map(profile => 
+                `<option value="${profile.id}" ${profile.id === activeProfile ? 'selected' : ''}>${profile.name}</option>`
+            ).join('');
+        }
+
+        // Create document with AI
+        async function createDocument() {
+            const docType = document.getElementById('documentType').value;
+            const profile = document.getElementById('profileSelect').value;
+            const title = document.getElementById('documentTitle').value;
+            const recipient = document.getElementById('recipientEmail').value;
+            const value = document.getElementById('documentValue').value;
+            const instructions = document.getElementById('instructions').value;
+            
+            if (!docType) {
+                showNotification('Please select a document type', 'warning');
+                return;
+            }
+            
+            if (!title) {
+                showNotification('Please enter a document title', 'warning');
+                return;
+            }
+            
+            const btn = document.getElementById('createDocBtn');
+            const originalText = btn.textContent;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Creating with AI...';
+            
+            try {
+                const docData = {
+                    title: title,
+                    type: docType,
+                    profile_used: profile,
+                    recipient: recipient,
+                    value: value ? parseFloat(value) : 0,
+                    description: instructions || `${docType} created with AI using ${profiles[profile]?.name || 'profile'}`
+                };
+                
+                const newDoc = await apiCall('/documents', {
+                    method: 'POST',
+                    body: JSON.stringify(docData)
+                });
+                
+                showNotification(`✅ ${newDoc.title} created successfully! All fields pre-filled from ${profiles[profile]?.name || 'profile'}.`);
+                closeModal('documentModal');
+                
+                // Clear form
+                document.getElementById('documentType').value = '';
+                document.getElementById('documentTitle').value = '';
+                document.getElementById('recipientEmail').value = '';
+                document.getElementById('documentValue').value = '';
+                document.getElementById('instructions').value = '';
+                
+                // Refresh data
+                if (currentTab === 'documents') {
+                    await loadDocuments();
+                }
+                await loadDashboardData();
+                
+            } catch (error) {
+                showNotification(`Failed to create document: ${error.message}`, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        }
+
+        // Profile management
+        function createProfile() {
+            currentEditingProfile = null;
+            document.getElementById('profileModal').style.display = 'block';
+            
+            // Clear form
+            document.getElementById('profileName').value = '';
+            document.getElementById('profileType').value = 'personal';
+            document.getElementById('fullName').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('address').value = '';
+            document.getElementById('taxId').value = '';
+            document.getElementById('industry').value = '';
+            document.getElementById('client').value = '';
+            document.getElementById('budget').value = '';
+            document.getElementById('timeline').value = '';
+            
+            toggleProfileFields('personal');
+        }
+
+        function editProfile(profileId) {
+            currentEditingProfile = profileId;
+            const profile = profiles[profileId];
+            
+            if (profile) {
+                document.getElementById('profileName').value = profile.name;
+                document.getElementById('profileType').value = profile.type;
+                document.getElementById('fullName').value = profile.fullName || '';
+                document.getElementById('email').value = profile.email || '';
+                document.getElementById('phone').value = profile.phone || '';
+                document.getElementById('address').value = profile.address || '';
+                document.getElementById('taxId').value = profile.taxId || '';
+                document.getElementById('industry').value = profile.industry || '';
+                document.getElementById('client').value = profile.client || '';
+                document.getElementById('budget').value = profile.budget || '';
+                document.getElementById('timeline').value = profile.timeline || '';
+                
+                toggleProfileFields(profile.type);
+                document.getElementById('profileModal').style.display = 'block';
+            }
+        }
+
+        function toggleProfileFields(type) {
+            document.getElementById('businessFields').style.display = type === 'business' ? 'block' : 'none';
+            document.getElementById('projectFields').style.display = type === 'project' ? 'block' : 'none';
+        }
+
+        // Add event listener for profile type change
+        document.getElementById('profileType').addEventListener('change', function() {
+            toggleProfileFields(this.value);
+        });
+
+        async function saveProfile() {
+            const name = document.getElementById('profileName').value;
+            const type = document.getElementById('profileType').value;
+            
+            if (!name) {
+                showNotification('Please enter a profile name', 'warning');
+                return;
+            }
+            
+            const btn = document.getElementById('saveProfileBtn');
+            const originalText = btn.textContent;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Saving...';
+            
+            try {
+                const profileData = {
+                    name: name,
+                    type: type,
+                    fullName: document.getElementById('fullName').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    address: document.getElementById('address').value
+                };
+                
+                // Add type-specific fields
+                if (type === 'business') {
+                    profileData.taxId = document.getElementById('taxId').value;
+                    profileData.industry = document.getElementById('industry').value;
+                } else if (type === 'project') {
+                    profileData.client = document.getElementById('client').value;
+                    profileData.budget = document.getElementById('budget').value;
+                    profileData.timeline = document.getElementById('timeline').value;
+                }
+                
+                let savedProfile;
+                if (currentEditingProfile) {
+                    // Update existing profile
+                    savedProfile = await apiCall(`/profiles/${currentEditingProfile}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(profileData)
+                    });
+                } else {
+                    // Create new profile
+                    savedProfile = await apiCall('/profiles', {
+                        method: 'POST',
+                        body: JSON.stringify(profileData)
+                    });
+                }
+                
+                showNotification(`✅ Profile "${name}" saved successfully!`);
+                closeModal('profileModal');
+                
+                // Refresh profiles
+                await loadProfiles();
+                
+                // Update profile selector in header
+                updateProfileSelector();
+                
+            } catch (error) {
+                showNotification(`Failed to save profile: ${error.message}`, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        }
+
+        function updateProfileSelector() {
+            const selector = document.getElementById('activeProfile');
+            selector.innerHTML = Object.values(profiles).map(profile => 
+                `<option value="${profile.id}" ${profile.id === activeProfile ? 'selected' : ''}>${profile.name}</option>`
+            ).join('');
+        }
+
+        function selectProfile(profileId) {
+            document.querySelectorAll('.profile-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            activeProfile = profileId;
+            document.getElementById('activeProfile').value = profileId;
+            showNotification(`Selected ${profiles[profileId]?.name || 'Profile'}`);
+        }
+
+        // Document operations
+        function openDocument(docId) {
+            const doc = documents.find(d => d.id === docId);
+            if (doc) {
+                showNotification(`Opening ${doc.title}...`);
+                // In a real app, this would open a document editor
+            }
+        }
+
+        // Search and filter functions
+        async function searchDocuments() {
+            const query = document.getElementById('documentSearch').value;
+            const status = document.getElementById('statusFilter').value;
+            const type = document.getElementById('typeFilter').value;
+            
+            try {
+                const params = new URLSearchParams();
+                if (query) params.append('q', query);
+                if (status) params.append('status', status);
+                if (type) params.append('type', type);
+                
+                const results = await apiCall(`/search?${params.toString()}`);
+                displayDocuments(results);
+                
+                showNotification(`Found ${results.length} documents`);
+            } catch (error) {
+                showNotification(`Search failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function filterDocuments() {
+            await searchDocuments();
+        }
+
+        // Automation features
+        async function setupAutomation() {
+            showNotification('🤖 Setting up smart automation...');
+            // In a real app, this would open automation settings
+        }
+
+        async function setupReminders() {
+            try {
+                // Set up reminders for pending documents
+                const pendingDocs = documents.filter(doc => doc.status === 'sent' || doc.status === 'pending');
+                
+                for (const doc of pendingDocs.slice(0, 3)) { // Limit to 3 for demo
+                    await apiCall('/automation/reminders', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            document_id: doc.id,
+                            type: 'follow_up',
+                            days: 3
+                        })
+                    });
+                }
+                
+                showNotification(`⏰ Auto-reminders set up for ${pendingDocs.length} documents!`);
+            } catch (error) {
+                showNotification(`Failed to setup reminders: ${error.message}`, 'error');
+            }
+        }
+
+        async function bulkOperations() {
+            const pendingDocs = documents.filter(doc => doc.status === 'pending').map(doc => doc.id);
+            
+            if (pendingDocs.length === 0) {
+                showNotification('No pending documents for bulk operations', 'warning');
+                return;
+            }
+            
+            try {
+                await apiCall('/automation/bulk', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        operation: 'send_reminder',
+                        document_ids: pendingDocs
+                    })
+                });
+                
+                showNotification(`⚡ Bulk reminders sent to ${pendingDocs.length} recipients!`);
+                await loadMessages();
+            } catch (error) {
+                showNotification(`Bulk operation failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function bulkMessage() {
+            showNotification('📧 Bulk messaging panel opened');
+        }
+
+        function messageTemplates() {
+            showNotification('📝 Message templates loaded');
+        }
+
+        async function aiOptimize() {
+            const draftDocs = documents.filter(doc => doc.status === 'draft');
+            
+            if (draftDocs.length === 0) {
+                showNotification('No draft documents to optimize', 'warning');
+                return;
+            }
+            
+            try {
+                const doc = draftDocs[0]; // Optimize first draft
+                const result = await apiCall('/ai/optimize', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        document_id: doc.id
+                    })
+                });
+                
+                showNotification(`🤖 AI optimization complete! Confidence: ${result.confidence_score}%`);
+            } catch (error) {
+                showNotification(`AI optimization failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Suggestion handling
+        async function handleSuggestion(action, type) {
+            switch(action) {
+                case 'send_reminder':
+                    await bulkOperations();
+                    break;
+                case 'payment_reminder':
+                    await setupReminders();
+                    break;
+                case 'create_template':
+                    openDocumentCreator();
+                    break;
+                default:
+                    showNotification(`Executing suggestion: ${type}`);
+            }
+        }
+
+        // Refresh functions
+        async function refreshMessages() {
+            await loadMessages();
+            showNotification('Messages refreshed');
+        }
+
+        async function refreshProfiles() {
+            await loadProfiles();
+            showNotification('Profiles refreshed');
+        }
+
+        async function refreshAnalytics() {
+            await loadAnalytics();
+            showNotification('Analytics refreshed');
+        }
+
+        // Export functions
+        function exportProfiles() {
+            const dataStr = JSON.stringify(profiles, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'signova_profiles.json';
+            link.click();
+            showNotification('Profiles exported successfully');
+        }
+
+        function exportAnalytics() {
+            const dataStr = JSON.stringify(analytics, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'signova_analytics.json';
+            link.click();
+            showNotification('Analytics exported successfully');
+        }
+
+        function importProfile() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const importedProfiles = JSON.parse(e.target.result);
+                            // In a real app, this would validate and import profiles
+                            showNotification('Profiles imported successfully');
+                        } catch (error) {
+                            showNotification('Failed to import profiles: Invalid file format', 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        // Utility functions
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const text = document.getElementById('notificationText');
+            
+            // Remove existing type classes
+            notification.classList.remove('error', 'warning');
+            
+            // Add type class
+            if (type !== 'success') {
+                notification.classList.add(type);
+            }
+            
+            text.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+
+        function openChatbot() {
+            showNotification('🤖 AI Assistant: How can I help you today? I can fix issues instantly, suggest new features, or help with document management!');
+        }
+
+        function logout() {
+            window.location.href = 'https://signova.ai';
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', async function() {
+            showNotification('🎉 Welcome to Signova Pro! Loading your data...');
+            
+            try {
+                // Load initial data
+                await loadProfiles();
+                updateProfileSelector();
+                await loadDashboardData();
+                
+                showNotification('✅ All systems ready! Your AI-powered document platform is live.');
+            } catch (error) {
+                showNotification('⚠️ Some features may be limited due to connection issues', 'warning');
+                console.error('Initialization error:', error);
+            }
+        });
+    </script>
+</body>
+</html>
+

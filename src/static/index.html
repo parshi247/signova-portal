@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signova User Portal - Electronic Signature Platform</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: #1a1a1a; 
+            line-height: 1.6; 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+
+        .return-nav {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .return-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .return-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+
+        .brand-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #4f46e5;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            background: white;
+        }
+
+        .login-button {
+            width: 100%;
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-button:hover {
+            background: #4338ca;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 1.5rem 0;
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+
+        .signup-button {
+            width: 100%;
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .signup-button:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
+        }
+
+        .security-features {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            text-align: left;
+        }
+
+        .security-features h4 {
+            color: #1f2937;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-list li:before {
+            content: "🔒";
+            font-size: 0.8rem;
+        }
+
+        .trusted-text {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.85rem;
+            margin-top: 1.5rem;
+            line-height: 1.4;
+        }
+
+        /* Purchase Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-subtitle {
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+
+        .plan-selector {
+            margin-bottom: 1.5rem;
+        }
+
+        .plan-selector select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .payment-methods {
+            margin-top: 2rem;
+        }
+
+        .payment-method {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .payment-method:hover {
+            border-color: #4f46e5;
+            background: #f8fafc;
+        }
+
+        .payment-method.stripe {
+            background: #635bff;
+            color: white;
+            border-color: #635bff;
+        }
+
+        .payment-method.stripe:hover {
+            background: #5a52e8;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 1rem;
+                padding: 2rem;
+            }
+            
+            .return-nav {
+                position: static;
+                margin-bottom: 1rem;
+            }
+            
+            body {
+                flex-direction: column;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="return-nav">
+        <a href="https://signova.ai" class="return-btn">
+            ← Back to Main Site
+        </a>
+    </div>
+
+    <div class="login-container">
+        <div class="logo">S</div>
+        <div class="brand-name">Signova</div>
+        <h1 class="welcome-text">Welcome Back</h1>
+        <p class="subtitle">Sign in to your professional account</p>
+
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    class="form-input" 
+                    placeholder="Enter your email address"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    class="form-input" 
+                    placeholder="Enter your password"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="login-button">
+                Sign In to Dashboard
+            </button>
+        </form>
+
+        <div class="divider">New to Signova?</div>
+
+        <button class="signup-button" onclick="openPurchaseModal()">
+            Create Professional Account
+        </button>
+
+        <div class="security-features">
+            <h4>🛡️ Enterprise Security</h4>
+            <ul class="feature-list">
+                <li>Bank-Grade Encryption</li>
+                <li>Multi-Factor Authentication</li>
+                <li>Advanced Access Controls</li>
+                <li>Audit Trail Monitoring</li>
+            </ul>
+        </div>
+
+        <div class="trusted-text">
+            🔐 Trusted by Fortune 500 companies worldwide with industry-leading security standards.
+        </div>
+    </div>
+
+    <!-- Purchase Modal -->
+    <div id="purchaseModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closePurchaseModal()">×</button>
+            <h2 class="modal-title">Complete Your Purchase</h2>
+            <p class="modal-subtitle">Get immediate access to all features</p>
+
+            <form id="purchaseForm">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-input" id="fullName" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Business Email</label>
+                    <input type="email" class="form-input" id="businessEmail" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Company Name (Optional)</label>
+                    <input type="text" class="form-input" id="companyName">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Selected Plan</label>
+                    <div class="plan-selector">
+                        <select id="planSelect" required>
+                            <option value="starter">Starter - $9/month</option>
+                            <option value="professional" selected>Professional - $29/month</option>
+                            <option value="business">Business - $79/month</option>
+                            <option value="enterprise">Enterprise - $199/month</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Create Password</label>
+                    <input type="password" class="form-input" id="newPassword" required>
+                </div>
+
+                <div class="payment-methods">
+                    <button type="button" class="payment-method stripe" onclick="handleStripePayment()">
+                        💳 Pay with Credit Card
+                    </button>
+                    <button type="button" class="payment-method" onclick="handlePayPalPayment()">
+                        🅿️ Pay with PayPal
+                    </button>
+                    <button type="button" class="payment-method" onclick="handleApplePayment()">
+                        🍎 Pay with Apple Pay
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const stripe = Stripe('pk_test_51QRvGJP7zKlGfqCJYour_publishable_key_here'); // Replace with your actual Stripe publishable key
+
+        const plans = {
+            starter: {
+                name: 'Starter',
+                price: 9,
+                priceId: 'price_1QRvGJP7zKlGfqCJstarter_monthly',
+                features: ['25 documents/month', 'Advanced signatures', 'Template library']
+            },
+            professional: {
+                name: 'Professional',
+                price: 29,
+                priceId: 'price_1QRvGJP7zKlGfqCJprofessional_monthly',
+                features: ['100 documents/month', 'Team collaboration', 'API access']
+            },
+            business: {
+                name: 'Business',
+                price: 79,
+                priceId: 'price_1QRvGJP7zKlGfqCJbusiness_monthly',
+                features: ['500 documents/month', 'Unlimited users', 'Advanced analytics']
+            },
+            enterprise: {
+                name: 'Enterprise',
+                price: 199,
+                priceId: 'price_1QRvGJP7zKlGfqCJenterprise_monthly',
+                features: ['Unlimited documents', 'AI insights', 'Dedicated support']
+            }
+        };
+
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Simulate login process
+            const loginBtn = event.target.querySelector('.login-button');
+            loginBtn.textContent = 'Signing in...';
+            loginBtn.disabled = true;
+
+            setTimeout(() => {
+                alert('Login successful! Redirecting to dashboard...');
+                // In production, redirect to actual dashboard
+                window.location.href = 'https://portal.signova.ai/dashboard';
+            }, 2000);
+        }
+
+        function openPurchaseModal() {
+            document.getElementById('purchaseModal').classList.add('active');
+        }
+
+        function closePurchaseModal() {
+            document.getElementById('purchaseModal').classList.remove('active');
+        }
+
+        async function handleStripePayment() {
+            const userData = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('businessEmail').value,
+                company: document.getElementById('companyName').value,
+                password: document.getElementById('newPassword').value
+            };
+
+            const selectedPlan = document.getElementById('planSelect').value;
+            const planConfig = plans[selectedPlan];
+
+            if (!userData.fullName || !userData.email || !userData.password) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            try {
+                // In production, this would call your backend to create a checkout session
+                const response = await fetch('https://your-backend.com/api/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        priceId: planConfig.priceId,
+                        customerData: userData
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create checkout session');
+                }
+
+                const session = await response.json();
+
+                // Redirect to Stripe Checkout
+                const result = await stripe.redirectToCheckout({
+                    sessionId: session.id
+                });
+
+                if (result.error) {
+                    throw new Error(result.error.message);
+                }
+
+            } catch (error) {
+                // For demo purposes - simulate successful payment
+                console.log('Processing payment for:', userData, planConfig);
+                
+                const paymentBtn = event.target;
+                paymentBtn.textContent = 'Processing payment...';
+                paymentBtn.disabled = true;
+
+                setTimeout(() => {
+                    alert(`Payment successful! Welcome to Signova ${planConfig.name} plan ($${planConfig.price}/month). Check your email for access instructions.`);
+                    closePurchaseModal();
+                    
+                    // Redirect to dashboard
+                    setTimeout(() => {
+                        window.location.href = 'https://portal.signova.ai/dashboard';
+                    }, 2000);
+                }, 3000);
+            }
+        }
+
+        async function handlePayPalPayment() {
+            const userData = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('businessEmail').value,
+                company: document.getElementById('companyName').value,
+                password: document.getElementById('newPassword').value
+            };
+
+            const selectedPlan = document.getElementById('planSelect').value;
+            const planConfig = plans[selectedPlan];
+
+            if (!userData.fullName || !userData.email || !userData.password) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            console.log('Processing PayPal payment for:', userData, planConfig);
+            
+            const paymentBtn = event.target;
+            paymentBtn.textContent = 'Processing PayPal payment...';
+            paymentBtn.disabled = true;
+
+            setTimeout(() => {
+                alert(`PayPal payment successful! Welcome to Signova ${planConfig.name} plan ($${planConfig.price}/month). Check your email for access instructions.`);
+                closePurchaseModal();
+                
+                setTimeout(() => {
+                    window.location.href = 'https://portal.signova.ai/dashboard';
+                }, 2000);
+            }, 3000);
+        }
+
+        async function handleApplePayment() {
+            const userData = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('businessEmail').value,
+                company: document.getElementById('companyName').value,
+                password: document.getElementById('newPassword').value
+            };
+
+            const selectedPlan = document.getElementById('planSelect').value;
+            const planConfig = plans[selectedPlan];
+
+            if (!userData.fullName || !userData.email || !userData.password) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            console.log('Processing Apple Pay payment for:', userData, planConfig);
+            
+            const paymentBtn = event.target;
+            paymentBtn.textContent = 'Processing Apple Pay payment...';
+            paymentBtn.disabled = true;
+
+            setTimeout(() => {
+                alert(`Apple Pay payment successful! Welcome to Signova ${planConfig.name} plan ($${planConfig.price}/month). Check your email for access instructions.`);
+                closePurchaseModal();
+                
+                setTimeout(() => {
+                    window.location.href = 'https://portal.signova.ai/dashboard';
+                }, 2000);
+            }, 3000);
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('purchaseModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePurchaseModal();
+            }
+        });
+    </script>
+</body>
+</html>
+
