@@ -1,0 +1,36 @@
+name: E2E (Playwright) - Staging
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Enable corepack (pnpm)
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.4.1 --activate
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
+
+      - name: Run Playwright E2E against staging
+        env:
+          BASE_URL: ${{ secrets.STAGING_BASE_URL }}
+          E2E_SEED_SECRET: ${{ secrets.E2E_SEED_SECRET }}
+          E2E_TIER_PASSWORD: ${{ secrets.E2E_TIER_PASSWORD }}
+        run: pnpm exec playwright test
